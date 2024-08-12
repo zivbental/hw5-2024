@@ -30,12 +30,13 @@ class QuestionnaireAnalysis:
 
     def show_age_distrib(self) -> Tuple[np.ndarray, np.ndarray]:
         bins = np.arange(0, 101, 10)
-        print(self.data.shape)
+        print(f'Bins: {bins}')
         age_df = self.data['age'].dropna()
-        print(age_df.shape)
         bin_count_list = []
-        for index in range(len(bins) - 1):
-            current_bin_count = age_df[(age_df >= bins[index]) & (age_df < bins[index + 1])].count()
+        for index in range(len(bins) - 2):
+            print(f'Bin range: {bins[index]} - {bins[index + 1]-1}')
+            current_bin_count = age_df[((age_df >= bins[index]) & (age_df <= bins[index + 1]-1))].count()
+            print(f'Bin count: {current_bin_count}')
             bin_count_list.append(current_bin_count)
         current_bin_count = age_df[(age_df >= bins[-2]) & (age_df <= bins[-1])].count()
         bin_count_list.append(current_bin_count)
@@ -122,7 +123,7 @@ class QuestionnaireAnalysis:
 data_file = 'data.json'
 analysis = QuestionnaireAnalysis(data_file)
 analysis.read_data()
-analysis.remove_rows_without_mail()
-print(analysis.score_subjects()['score'])
+hist, bins = analysis.show_age_distrib()
+print(hist)
 
 
